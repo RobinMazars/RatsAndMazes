@@ -12,16 +12,9 @@ def createBoard(nbrCaseH, nbrCaseV):
         board.append(line)
     return board
 
+
 def createWall():
     pass
-
-
-
-def move(position, mouvX=0, mouvY=0):
-    board[position.y][position.x] = board[position.y][position.x][:-1]
-    newPosition = Position(origineX+mouvX, origineY+mouvY)
-    spawnRat(newPosition)
-
 
 
 class Board():
@@ -44,6 +37,7 @@ class Board():
 
     def clean(self, position):
         self.board[position.y][position.x] = self.board[position.y][position.x][:2]
+
 
 class Mj():
     def __init__(self):
@@ -90,18 +84,19 @@ class Rat():
         return self.position
 
 
-nbrCaseH = 8
-nbrCaseV = nbrCaseH
-nbrCaseTotal = nbrCaseH + nbrCaseV
-origineX = 1
-origineY = 2
-mj = Mj()
-mj.createBoard(nbrCaseH, nbrCaseV)
-mj.createRat(Position(origineX, origineY))
-mj.board.show()
-mj.spawnRat()
-mj.board.show()
-mj.moveRat(1, 0)
-mj.board.show()
-mj.moveRat(0, 1)
-mj.board.show()
+if __name__ == '__main__':
+    nbrCaseH = 8
+    nbrCaseV = nbrCaseH
+    nbrCaseTotal = nbrCaseH + nbrCaseV
+    origineX = 1
+    origineY = 2
+    mj = Mj()
+    mj.createBoard(nbrCaseH, nbrCaseV)
+    mj.createRat(Position(origineX, origineY))
+    mj.board.show()
+    mj.spawnRat()
+    mj.board.show()
+    mj.moveRat(1, 0)
+    mj.board.show()
+    mj.moveRat(0, 1)
+    mj.board.show()
