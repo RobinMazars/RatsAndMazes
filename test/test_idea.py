@@ -16,18 +16,22 @@ def test_Board_Property(nbrCaseH, nbrCaseV):
 # @settings(max_examples=200,
 #           suppress_health_check=(HealthCheck.filter_too_much,))
 
-rectangle_lists = st.integers(min_value=0, max_value=10).flatmap(lambda n: st.lists(st.lists(st.integers(), min_size=n, max_size=n)))
-find(rectangle_lists, lambda x: True)
-@given(nbrCaseH=st.integers(1, 100),
-       nbrCaseV=st.integers(1, 100),
-       positionX=st.integers(1).filter(st.integers(1, 100)),
-       positionY=st.integers(1, 99))
-def test_Board_clean(nbrCaseH, nbrCaseV, positionX, positionY):
+@st.composite
+def doubleIntegersLowerThan(draw):
+    int1 = draw(st.integers(1, 100))
+    int2 = draw(st.integers(1, int1))
+    return {'max': int1, 'min': int2}
+
+
+@given(HX=doubleIntegersLowerThan(),
+       VY=doubleIntegersLowerThan())
+def test_Board_clean(HX, VY):
     # assume(positionX < nbrCaseV-1)
     # assume(positionY < nbrCaseH-1)
-    dirtyBoard = Board(nbrCaseH, nbrCaseV)
-    cleanBoard = Board(nbrCaseH, nbrCaseV)
-    dirtyBoard.getBoard()[positionY-1][positionX-1].append("testRat")
-    print(nbrCaseH, nbrCaseV, positionX, positionY)
-    assert(cleanBoard != dirtyBoard)
+    dirtyBoard = Board(HX['max'], VY['max'])
+    cleanBoard = Board(HX['max'], VY['max'])
+    assert(cleanBoard.getBoard() == dirtyBoard.getBoard())
+    dirtyBoard.getBoard()[VY['min']-1][HX['min']-1].append("testRat")
+    print(HX['max'], HX['min'], VY['max'], VY['min'])
+    assert(cleanBoard.getBoard() != dirtyBoard.getBoard())
     # assert(False)
