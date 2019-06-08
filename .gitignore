@@ -1,0 +1,4 @@
+venvRat
+__pycache__
+*.pyc
+.hypothesis

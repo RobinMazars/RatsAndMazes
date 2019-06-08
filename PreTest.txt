@@ -1,0 +1,11 @@
+rat can:
+  -spawn
+  -move
+  -detect wall
+  -detect other rat
+
+maze have:
+  -pseudo-random creation
+  -fixe border
+  -only two exit
+  -all position are reachable (no empty space)

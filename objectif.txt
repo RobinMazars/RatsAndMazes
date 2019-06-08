@@ -1,0 +1,6 @@
+create mazeCreator
+create Rats
+create vizualize
+create exit and win
+create communication between rats
+create test
