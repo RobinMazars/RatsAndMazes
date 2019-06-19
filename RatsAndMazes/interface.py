@@ -1,18 +1,19 @@
 from tkinter import Canvas, Tk
-import time, random
+import time
+import random
 # root = Tk()
 # root.title('RatAndMazes')
 # root.geometry('800x800+0+0')
 from turtle import RawTurtle, RawPen
 sizeTile = 25
-nbrTileW = 4
-nbrTileH = 4
+nbrTileW = 3
+nbrTileH = 5
 width = sizeTile*nbrTileW
 height = sizeTile*nbrTileH
 root = Tk()
 padding = 150
-CanvasW = width+padding
-CanvasH = height+padding
+CanvasW = width+padding*2
+CanvasH = height+padding*2
 root.geometry('%dx%d+0+0' % (CanvasW, CanvasH))
 cv1 = Canvas(root, width=CanvasW, height=CanvasH, bg="#ddffff")
 cv1.pack()
@@ -65,9 +66,10 @@ class Maze():
             self.start()
 
     def CreateTile(self):
-        self.listeTile=[]
+        self.listeTile = []
         for x in range(nbrTileW):
             for y in range(nbrTileH):
+                # print(x, y)
                 self.listeTile.append(Tile(x+1, y+1))
 
     def drawAll(self):
@@ -75,30 +77,31 @@ class Maze():
             x.draw()
 
     def start(self):
-        nbrExtTile = nbrTileW+nbrTileH-1+nbrTileW-1+nbrTileH-2
-        rngNbr1 = random.randint(1, nbrExtTile)
-        print("nbrExtTile :",nbrExtTile)
-        print(rngNbr1)
-        self.tileStart={}
-        if rngNbr1<nbrTileH:
-            print("<1/4")
-            self.tileStart["col"]=1
-            self.tileStart["line"]=rngNbr1
-        elif rngNbr1<nbrTileH+nbrTileW:
-            print("<2/4")
-            self.tileStart["line"]=nbrTileW-1
-            self.tileStart["col"]=rngNbr1-nbrTileH
-        elif rngNbr1<nbrTileH*2+nbrTileW:
-            print("<3/4")
-            self.tileStart["col"]=nbrTileH-1
-            self.tileStart["line"]=rngNbr1-nbrTileH-nbrTileW
-        else:
-            print("<4/4")
-            self.tileStart["col"]=rngNbr1-nbrTileH*2-nbrTileW
-            self.tileStart["line"]=1
-        print(self.tileStart)
-        testTile = Tile(1, 1)
-        testTile.draw()
+        nbrExtTile = ((nbrTileW*2)-1+(nbrTileH*2)-1)-1
+        for rngNbr1 in range(1, nbrExtTile+1):
+            print("nbrExtTile :", nbrExtTile)
+            print(rngNbr1)
+            self.tileStart = {}
+            if rngNbr1 <= nbrTileW:
+                print("<1/4")
+                self.tileStart["col"] = rngNbr1
+                self.tileStart["line"] = 1
+            elif rngNbr1 < nbrTileH + nbrTileW:
+                print("<2/4")
+                self.tileStart["col"] = nbrTileW
+                self.tileStart["line"] = rngNbr1 - nbrTileW +1
+            elif rngNbr1 < nbrTileW * 2 + nbrTileH-1:
+                print("<3/4")
+                self.tileStart["col"] = nbrTileW*2+nbrTileH - rngNbr1-1
+                self.tileStart["line"] = nbrTileH
+            else:
+                print("<4/4")
+                self.tileStart["col"] = 1
+                self.tileStart["line"] = (nbrTileH*2+nbrTileW*2) - rngNbr1 - 2
+            print(self.tileStart)
+            testTile = Tile(self.tileStart["col"], self.tileStart["line"])
+            testTile.draw()
+
 
 class Tile():
     """docstring for Tile."""
@@ -123,9 +126,9 @@ class Tile():
         pen.up()
         pen.goto(self.x, self.y)
         pen.seth(0)
-        print("-----")
+        center = self.getCenter()
+        print(center)
         for x in self.border:
-            print(x)
             if x is True:
                 pen.down()
                 pen.forward(sizeTile)
@@ -133,6 +136,7 @@ class Tile():
             else:
                 pen.forward(sizeTile)
             pen.right(90)
+        self.drawTexte()
 
     def tileToPos(self):
         self.x = (((self.col-1)*sizeTile)-height/2)
@@ -143,6 +147,20 @@ class Tile():
         print("self.y : ", self.y)
         self.col = ((self.x + height/2) / sizeTile) + 1
         self.line = ((-self.y + width/2) / sizeTile) + 1
+
+    def getCenter(self):
+        center = {}
+        center["x"] = self.x+sizeTile/2
+        center["y"] = self.y-sizeTile/2
+        return center
+
+    def drawTexte(self):
+        center = self.getCenter()
+        pen = RawPen(self.canvas)
+        pen.ht()
+        pen.up()
+        pen.goto(center["x"]-5, center["y"])
+        pen.write("%d:%d" % (self.col, self.line))
 
 
 class Tile2():
@@ -204,5 +222,6 @@ cadre.forward(height)
 #         for i in range(4):
 #             rat.forward(sizeTile)
 #             rat.right(90)
+
 maze = Maze()
 time.sleep(10)
